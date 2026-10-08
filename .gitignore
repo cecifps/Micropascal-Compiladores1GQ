@@ -1,0 +1,6 @@
+# Executável gerado pelo Makefile
+micropascal
+
+# Arquivos temporários de testes
+*.tmp
+*.o
