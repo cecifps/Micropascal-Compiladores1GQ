@@ -13,9 +13,9 @@ A implementação utiliza apenas a biblioteca padrão de C e não utiliza Flex, 
 
 ```text
 .
-├── exemplos/
+├── exemplo/
 │   ├── paridade.pas
-│   ├── soma_impares.pas
+│   ├── soma_impare.pas
 │   └── completo.pas
 ├── src/
 │   └── micropascal.c
@@ -31,9 +31,9 @@ A implementação utiliza apenas a biblioteca padrão de C e não utiliza Flex, 
 | Arquivo | Função |
 |---|---|
 | `src/micropascal.c` | Implementação do lexer, parser e programa principal. |
-| `exemplos/paridade.pas` | Exemplo de paridade apresentado no enunciado. |
-| `exemplos/soma_impares.pas` | Exemplo da soma dos primeiros números ímpares apresentado no enunciado. |
-| `exemplos/completo.pas` | Exemplo adicional para testar diferentes recursos da linguagem. |
+| `exemplo/paridade.pas` | Exemplo de paridade apresentado no enunciado. |
+| `exemplo/soma_impare.pas` | Exemplo da soma dos primeiros números ímpares apresentado no enunciado. |
+| `exemplo/completo.pas` | Exemplo adicional para testar diferentes recursos da linguagem. |
 | `tests/test.py` | Testes automatizados para entradas válidas, inválidas e tokens. |
 | `Makefile` | Compilação, execução dos testes e limpeza do executável. |
 | `.gitignore` | Ignora arquivos gerados durante a compilação. |
@@ -65,14 +65,14 @@ cc -std=c11 -Wall -Wextra -Wpedantic -O2 src/micropascal.c -o micropascal
 Para analisar um programa micro-Pascal:
 
 ```bash
-./micropascal exemplos/paridade.pas
+./micropascal exemplo/paridade.pas
 ```
 
 Também podem ser executados:
 
 ```bash
-./micropascal exemplos/soma_impares.pas
-./micropascal exemplos/completo.pas
+./micropascal exemplo/soma_impare.pas
+./micropascal exemplo/completo.pas
 ```
 
 Quando o programa é válido, o compilador informa:
@@ -232,7 +232,7 @@ Erro de sintaxe no token [lexema]
 O programa possui também um modo opcional para visualizar o resultado do lexer:
 
 ```bash
-./micropascal --tokens exemplos/paridade.pas
+./micropascal --tokens exemplo/paridade.pas
 ```
 
 Cada linha apresenta a localização, o tipo do token e seu lexema. O último token apresentado é `EOF`.
@@ -258,10 +258,11 @@ Os testes verificam, entre outros casos:
 - `if`, `while` e `repeat`;
 - comentários `//` presentes nos exemplos;
 - caracteres inválidos;
-- literais `char` inválidos;
-- ausência de `;`;
+- literais `char` inválidos, incluindo caracteres fora da lista permitida;
+- caracteres NUL embutidos no arquivo;
+- ausência de `;` e ponto final;
 - tokens depois do ponto final;
-- modo de visualização dos tokens.
+- formato e localização dos tokens no modo de visualização.
 
 Para remover o executável gerado:
 
