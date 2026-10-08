@@ -269,17 +269,3 @@ Para remover o executável gerado:
 make clean
 ```
 
-## Como colocar no GitHub
-
-Depois de criar um novo repositório vazio no GitHub, na pasta deste projeto:
-
-```bash
-git init
-git add .
-git commit -m "Implementa lexer e parser do micro-Pascal"
-git branch -M main
-git remote add origin URL_DO_SEU_REPOSITORIO
-git push -u origin main
-```
-
-Não é necessário colocar o executável `micropascal` no repositório, pois ele é gerado pelo `make` e está no `.gitignore`.
