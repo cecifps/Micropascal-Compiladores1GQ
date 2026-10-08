@@ -152,7 +152,13 @@ static Token lexer_next(Lexer *lx) {
     int column = lx->column;
     char c = lexer_peek(lx);
 
-    if (c == '\0') return make_token(lx, TOKEN_EOF, start, line, column);
+    if (c == '\0') {
+        if (lx->pos < lx->length) {
+            lexer_error(lx, "\\0");
+            lexer_advance(lx);
+        }
+        return make_token(lx, TOKEN_EOF, lx->pos, line, column);
+    }
 
     if (is_letter(c)) {
         lexer_advance(lx);
@@ -180,7 +186,7 @@ static Token lexer_next(Lexer *lx) {
         lexer_advance(lx);
         char x = lexer_peek(lx);
         int valid = 0;
-        if (is_letter(x) || is_digit(x)) {
+        if (((x >= 'a' && x <= 'z') || (x >= 'A' && x <= 'Z')) || is_digit(x)) {
             valid = 1;
             lexer_advance(lx);
         } else if (x == '\\' && (lexer_peek_next(lx) == 'n' || lexer_peek_next(lx) == 't')) {
@@ -192,8 +198,11 @@ static Token lexer_next(Lexer *lx) {
             lexer_advance(lx);
             return make_token(lx, TOKEN_CHAR, start, line, column);
         }
-        if (lexer_peek(lx) == '\0') {
+        if (lexer_peek(lx) == '\0' && lx->pos >= lx->length) {
             lexer_error(lx, "EOF");
+        } else if (lexer_peek(lx) == '\0') {
+            lexer_error(lx, "\\0");
+            lexer_advance(lx);
         } else {
             char bad[2] = {lexer_peek(lx), '\0'};
             lexer_error(lx, bad);
@@ -244,9 +253,13 @@ static char *token_lexeme(const Lexer *lx, Token t) {
 }
 
 static void parser_syntax_error(Parser *p) {
-    char *lexeme = token_lexeme(&p->lexer, p->lexer.current);
-    fprintf(stderr, "Erro de sintaxe no token [%s]\n", lexeme);
-    free(lexeme);
+    if (p->lexer.current.type == TOKEN_EOF) {
+        fprintf(stderr, "Erro de sintaxe no token [EOF]\n");
+    } else {
+        char *lexeme = token_lexeme(&p->lexer, p->lexer.current);
+        fprintf(stderr, "Erro de sintaxe no token [%s]\n", lexeme);
+        free(lexeme);
+    }
     p->had_error = 1;
 }
 
